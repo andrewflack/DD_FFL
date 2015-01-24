@@ -117,6 +117,10 @@ scores.clean <- subset(scores.clean,select=-c(player.team.pos,NFLstatus))
 scores.clean[,c("year","teamID","name","owner","NFLopp","week","player","NFLteam","pos","homeaway","winloss")] <- 
   lapply(scores.clean[,c("year","teamID","name","owner","NFLopp","week","player","NFLteam","pos","homeaway","winloss")], as.factor)
 
+#####THIS SEEMS TO SCREW UP TEAM SCORES
+scores.clean$FFLpts <- as.numeric(scores.clean$FFLpts)
+scores.clean$NFLteamscore <- as.numeric(as.character(scores.clean$NFLteamscore))
+scores.clean$NFLoppscore <- as.numeric(as.character(scores.clean$NFLoppscore))
 # scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")] <- 
 #   lapply(scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")], as.numeric)
 
