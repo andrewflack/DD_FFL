@@ -117,8 +117,8 @@ scores.clean <- subset(scores.clean,select=-c(player.team.pos,NFLstatus))
 scores.clean[,c("year","teamID","name","owner","NFLopp","week","player","NFLteam","pos","homeaway","winloss")] <- 
   lapply(scores.clean[,c("year","teamID","name","owner","NFLopp","week","player","NFLteam","pos","homeaway","winloss")], as.factor)
 
-scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")] <- 
-  lapply(scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")], as.numeric)
+# scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")] <- 
+#   lapply(scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")], as.numeric)
 
 ### FUTURE WORK - also merge FFL opponent using week and teamID
 

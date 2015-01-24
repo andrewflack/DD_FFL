@@ -1,9 +1,11 @@
-data_loading: on
-cache_loading: off
-recursive_loading: off
-munging: on
-logging: off
-load_libraries: on
+data_loading: FALSE
+cache_loading: TRUE
+recursive_loading: FALSE
+munging: FALSE
+logging: FALSE
+load_libraries: TRUE
 libraries: plyr, dplyr, ggplot2, stringr, lubridate, XML
-as_factors: on
-data_tables: off
+as_factors: TRUE
+data_tables: FALSE
+version: 0.6
+attach_internal_libraries: TRUE
