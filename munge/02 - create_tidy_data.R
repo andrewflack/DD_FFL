@@ -28,10 +28,10 @@ firstsplit <- as.data.frame(firstsplit)
 colnames(firstsplit) <- c("player","teampos")
 
 # remove probable (P), questionable (Q), out (O), suspended (SSPD) and all other punctionation besides slash, remove * from player col
-firstsplit$teampos <- gsub("\\s+Q$|\\s+P$|\\s+O$|\\s+SSPD|\\s+IR|[^[:alnum:][:space:]/]","",firstsplit$teampos)
+firstsplit$teampos <- gsub("\\s+Q$|\\s+P$|\\s+O$|\\s+SSPD|\\s+IR|[^[:alnum:][:space:]]","",firstsplit$teampos)
 firstsplit$player <- gsub("[^[:alnum:][:space:]/'-]","",firstsplit$player)
-firstsplit$teampos <- gsub("\\s{1}D/ST\\s"," ",firstsplit$teampos) # remove first occurrence of "D/ST"
-firstsplit$player <- gsub("\\s{1}D/ST\\s"," ",firstsplit$player) # remove first occurrence of "D/ST"
+firstsplit$teampos <- gsub("\\s{1}DST\\s"," ",firstsplit$teampos) # remove first occurrence of "D/ST"
+firstsplit$player <- gsub("\\s{1}DST\\s"," ",firstsplit$player) # remove first occurrence of "D/ST"
 
 # remove leading whitespace from teampos column
 firstsplit$teampos <- gsub("^\\s+|\\s+$", "",firstsplit$teampos)
@@ -117,12 +117,14 @@ scores.clean <- subset(scores.clean,select=-c(player.team.pos,NFLstatus))
 scores.clean[,c("year","teamID","name","owner","NFLopp","week","player","NFLteam","pos","homeaway","winloss")] <- 
   lapply(scores.clean[,c("year","teamID","name","owner","NFLopp","week","player","NFLteam","pos","homeaway","winloss")], as.factor)
 
-#####THIS SEEMS TO SCREW UP TEAM SCORES
 scores.clean$FFLpts <- as.numeric(scores.clean$FFLpts)
 scores.clean$NFLteamscore <- as.numeric(as.character(scores.clean$NFLteamscore))
 scores.clean$NFLoppscore <- as.numeric(as.character(scores.clean$NFLoppscore))
-# scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")] <- 
-#   lapply(scores.clean[,c("FFLpts","NFLteamscore","NFLoppscore")], as.numeric)
+
+### make sure data types match in teamsandowners and weeklymatchups
+ddffl.teamsandowners[,c("year","teamID","name","owner")] <- lapply(ddffl.teamsandowners[,c("year","teamID","name","owner")] , as.factor) 
+ddffl.weeklymatchups[,c("year","week","teamID","opp_teamID")] <- lapply(ddffl.weeklymatchups[,c("year","week","teamID","opp_teamID")] , as.factor) 
+
 
 ### FUTURE WORK - also merge FFL opponent using week and teamID
 

@@ -17,6 +17,9 @@ scores.clean %>%
 
 # ...and weekly totals by owner
 scores.clean %>% 
+  group_by(owner) %>%
+  mutate(seasons = n_distinct(year)) %>%
+  filter(seasons > 2) %>%  
   group_by(owner,year,week) %>% 
   summarize(weeklytotal=sum(FFLpts)) %>% 
   ggplot(aes(x=weeklytotal,colour=owner)) + 
