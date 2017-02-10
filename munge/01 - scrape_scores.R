@@ -5,9 +5,9 @@ url1 <- 'http://games.espn.go.com/ffl/boxscorequick?leagueId=341583&teamId='
 url2 <- '&scoringPeriodId='
 url3 <- '&seasonId='
 
-y <- rep(c(2010,2011,2012,2013,2014,2015),each=104)
-w <- rep(1:13,each=8,times=6)
-t <- rep(1:8,times=78)
+y <- rep(c(2010,2011,2012,2013,2014,2015,2016),each=104)
+w <- rep(1:13,each=8,times=7)
+t <- rep(1:8,times=91)
 dat <- data.frame(y,w,t)
 
 scores.raw <- ldply(mapply(getScoresTable,dat$y,dat$w,dat$t), data.frame)

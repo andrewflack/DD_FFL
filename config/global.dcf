@@ -1,11 +1,11 @@
-data_loading: FALSE
+data_loading: TRUE
 cache_loading: TRUE
 recursive_loading: FALSE
-munging: FALSE
+munging: TRUE
 logging: FALSE
 load_libraries: TRUE
-libraries: plyr, dplyr, ggplot2, lubridate, XML, tidyr, class
+libraries: plyr, dplyr, ggplot2, lubridate, XML, tidyr, class, stringr
 as_factors: TRUE
 data_tables: FALSE
-version: 0.6
+version: 0.7
 attach_internal_libraries: TRUE
