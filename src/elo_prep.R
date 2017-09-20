@@ -25,7 +25,8 @@ results_w_elo <- results_w_elo %>%
   mutate(mov = week_total - opp_week_total)
 
 init <- 1500
-k <- 20
+k <- 5
+revert <- 2/3 # how much of your rating you keep going into a new season
 
 # initialize 3D array to track elo_i and elo_n rating by owner and period
 elohist_i <- array(init, dim = c(length(sort(unique(c(results_w_elo$owner, results_w_elo$opp_owner)))), max(results_w_elo$period) + 1), dimnames = list(sort(unique(results_w_elo$owner)), seq(1:(max(results_w_elo$period) + 1))))
@@ -44,6 +45,11 @@ for (i in 1:nrow(results_w_elo)) {
   } else {
     results_w_elo$elo_i[i] <- elohist_i[results_w_elo$owner[i], results_w_elo$period[i]]
   }
+  
+  if (results_w_elo$new_season[i] == 1) {
+    results_w_elo$elo_i[i] <- init*(1-revert) + results_w_elo$elo_i[i]*revert
+  }
+  
   results_w_elo$opp_elo_i[i] <- elohist_i[results_w_elo$opp_owner[i], results_w_elo$period[i]]
   results_w_elo$elo_diff[i] <- results_w_elo$elo_i[i] - results_w_elo$opp_elo_i[i]
   print(paste0("Owner elo_i: ", results_w_elo$elo_i[i], " opp_owner elo_i: ", elohist_i[results_w_elo$opp_owner[i], results_w_elo$period[i]], " elo_diff: ", results_w_elo$elo_diff[i]))
@@ -53,7 +59,8 @@ for (i in 1:nrow(results_w_elo)) {
   } else {
     results_w_elo$MOVM[i] <- log(abs(results_w_elo$mov[i]) + 1)*(2.2/((results_w_elo$opp_elo_i[i] - results_w_elo$elo_i[i]) * .001 + 2.2))
   }
-  results_w_elo$elo_n[i] <- results_w_elo$elo_i[i] + (results_w_elo$MOVM[i]*k*((abs(results_w_elo$mov[i])^.8)/(7.5 + .006*(abs(results_w_elo$elo_diff[i])))))*(results_w_elo$won_matchup[i]-results_w_elo$exp[i])
+  # results_w_elo$elo_n[i] <- results_w_elo$elo_i[i] + (results_w_elo$MOVM[i]*k*((abs(results_w_elo$mov[i])^.8)/(7.5 + .006*(abs(results_w_elo$elo_diff[i])))))*(results_w_elo$won_matchup[i]-results_w_elo$exp[i])
+  results_w_elo$elo_n[i] <- results_w_elo$elo_i[i] + results_w_elo$MOVM[i]*k*(results_w_elo$won_matchup[i]-results_w_elo$exp[i])
   elohist_n[results_w_elo$owner[i], results_w_elo$period[i]] <- results_w_elo$elo_n[i]
   elohist_i[results_w_elo$owner[i], results_w_elo$period[i] + 1] <- results_w_elo$elo_n[i]
 }
@@ -66,3 +73,6 @@ results_w_elo %>%
   geom_line(color = "red") + 
   geom_vline(xintercept = c(13, 26, 39, 52, 65, 78), color = "grey50") + 
   theme_bw()
+
+# df <- data_frame(k = seq(from = 5, to = 20, by = 5), revert = seq(from = .25, to = .80, by = .15))
+# df %>% expand(k, revert)
