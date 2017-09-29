@@ -65,7 +65,7 @@ for (i in 1:nrow(results_w_elo)) {
   elohist_i[results_w_elo$owner[i], results_w_elo$period[i] + 1] <- results_w_elo$elo_n[i]
 }
 
-# write.csv(results_w_elo, "data/results_w_elo.csv", row.names = FALSE)
+write.csv(results_w_elo, "data/results_w_elo.csv", row.names = FALSE)
 
 results_w_elo %>% 
   ggplot(aes(x = period, y = elo_n, color = owner)) + 
@@ -74,5 +74,5 @@ results_w_elo %>%
   geom_vline(xintercept = c(13, 26, 39, 52, 65, 78), color = "grey50") + 
   theme_bw()
 
-# df <- data_frame(k = seq(from = 5, to = 20, by = 5), revert = seq(from = .25, to = .80, by = .15))
+# df <- data_frame(k = seq(2, 40, by = 2), revert = seq(0.05, 1, by = .05))
 # df %>% expand(k, revert)
