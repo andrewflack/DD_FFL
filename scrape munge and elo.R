@@ -117,7 +117,7 @@ revert <- 1/4 # between seasons, a team retains 3/4 of their rating
 
 # initialize 3D array to track elo_i and elo_n rating by owner and period
 elohist_i <- array(init, dim = c(length(sort(unique(c(results_w_elo$owner, results_w_elo$opp_owner)))), max(results_w_elo$period) + 1), dimnames = list(sort(unique(results_w_elo$owner)), seq(1:(max(results_w_elo$period) + 1))))
-elohist_n <- array(init, dim = c(length(sort(unique(c(results_w_elo$owner, results_w_elo$opp_owner)))), max(results_w_elo$period)), dimnames = list(sort(unique(results_w_elo$owner)), seq(1:max(results_w_elo$period))))
+elohist_n <- array(NA, dim = c(length(sort(unique(c(results_w_elo$owner, results_w_elo$opp_owner)))), length(unique(results$year))*13), dimnames = list(sort(unique(results_w_elo$owner)), seq(1:(length(unique(results$year))*13))))
 
 results_w_elo$elo_i <- NA
 results_w_elo$elo_n <- NA
@@ -138,16 +138,23 @@ for (i in 1:nrow(results_w_elo)) {
   }
   
   results_w_elo$opp_elo_i[i] <- elohist_i[results_w_elo$opp_owner[i], results_w_elo$period[i]]
+  
   results_w_elo$elo_diff[i] <- results_w_elo$elo_i[i] - results_w_elo$opp_elo_i[i]
   print(paste0("Owner elo_i: ", results_w_elo$elo_i[i], " opp_owner elo_i: ", elohist_i[results_w_elo$opp_owner[i], results_w_elo$period[i]], " elo_diff: ", results_w_elo$elo_diff[i]))
+  
   results_w_elo$exp[i] <- 1 - 1/((10^(results_w_elo$elo_diff[i]/400)) + 1)
+  
+  # calculate MOVM
   if (results_w_elo$won_matchup[i] == 1) {
     results_w_elo$MOVM[i] <- log(abs(results_w_elo$mov[i]) + 1)*(2.2/((results_w_elo$elo_i[i] - results_w_elo$opp_elo_i[i]) * .001 + 2.2))
   } else {
     results_w_elo$MOVM[i] <- log(abs(results_w_elo$mov[i]) + 1)*(2.2/((results_w_elo$opp_elo_i[i] - results_w_elo$elo_i[i]) * .001 + 2.2))
   }
-  # results_w_elo$elo_n[i] <- results_w_elo$elo_i[i] + (results_w_elo$MOVM[i]*k*((abs(results_w_elo$mov[i])^.8)/(7.5 + .006*(abs(results_w_elo$elo_diff[i])))))*(results_w_elo$won_matchup[i]-results_w_elo$exp[i])
+  
+  # calculate new rating (elo_n)
   results_w_elo$elo_n[i] <- results_w_elo$elo_i[i] + results_w_elo$MOVM[i]*k*(results_w_elo$won_matchup[i]-results_w_elo$exp[i])
+  
+  # update recordkeeping
   elohist_n[results_w_elo$owner[i], results_w_elo$period[i]] <- results_w_elo$elo_n[i]
   elohist_i[results_w_elo$owner[i], results_w_elo$period[i] + 1] <- results_w_elo$elo_n[i]
 }
