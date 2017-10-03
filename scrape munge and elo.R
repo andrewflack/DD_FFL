@@ -42,7 +42,7 @@ dat <- data.frame(y, w, t)
 # scores_raw <- dat %>%
 #   rowwise() %>%
 #   mutate(pts = getScore(y, w, t))
-
+# 
 # write.csv(scores_raw, "data/scores_raw.csv", row.names = FALSE)
 scores_raw <- read.csv("data/scores_raw.csv", stringsAsFactors = FALSE)
 
@@ -193,7 +193,7 @@ current_ratings <- results_w_elo %>%
   select(year, week, owner, rating = elo_n) %>% 
   left_join(previous_week, by = c("owner")) %>% 
   mutate(one_week_change = round(rating - prior_rating)) %>% 
-  select(year, week, owner, rating, one_week_change) %>% 
+  select(owner, rating, one_week_change) %>% 
   mutate(rating = round(rating, 0))
 
 current_ratings
