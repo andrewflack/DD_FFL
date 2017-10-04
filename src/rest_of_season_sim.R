@@ -75,7 +75,42 @@ sim_stats <- sim_results_tall %>%
 
 current_ratings %>% left_join(sim_stats, by = "owner")
 
+#### Plots ####
 sim_results_tall %>% 
   ggplot(aes(x = reorder(owner, wins, FUN = median), y = wins)) + 
   geom_boxplot() + 
   coord_flip()
+
+sim_results_tall %>% 
+  group_by(wins) %>% 
+  count() %>% 
+  mutate(freq = n/sum(n)) %>% 
+  ggplot(aes(x = as.factor(wins), y = freq)) + 
+  geom_bar(stat = "identity")
+
+sim_results_tall %>% 
+  group_by(wins, place) %>% 
+  count() %>% 
+  arrange(place, wins) %>% 
+  mutate(freq = n/sum(n)) %>% 
+  ggplot(aes(x = as.factor(wins), y = freq, fill = as.factor(place))) + 
+  geom_bar(stat = "identity") + 
+  facet_wrap(~place, nrow = 2) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(x = "Win Total", y = "P(Finish in Place | Win Total)", 
+       title = "Probability of Finishing in 1st - 8th Place",
+       subtitle = "Conditional on Win Total")
+
+sim_results_tall %>% 
+  group_by(wins, place) %>% 
+  count() %>% 
+  arrange(place, wins) %>% 
+  mutate(freq = n/sum(n)) %>% 
+  ggplot(aes(x = as.factor(wins), y = freq, fill = as.factor(place))) + 
+  geom_bar(stat = "identity") + 
+  theme_minimal() +
+  theme(legend.title = element_blank()) +
+  labs(x = "Win Total", y = "P(Finish in Place | Win Total)", 
+       title = "Probability of Finishing in 1st - 8th Place",
+       subtitle = "Conditional on Win Total")

@@ -113,7 +113,7 @@ results_w_elo <- results_w_elo %>%
 
 init <- 1500
 k <- 10
-revert <- 3/4 # between seasons, a team retains 1/4 of their rating
+revert <- 1/4 # between seasons, a team retains 3/4 of their rating
 
 # initialize 3D array to track elo_i and elo_n rating by owner and period
 elohist_i <- array(init, dim = c(length(sort(unique(c(results_w_elo$owner, results_w_elo$opp_owner)))), max(results_w_elo$period) + 1), dimnames = list(sort(unique(results_w_elo$owner)), seq(1:(max(results_w_elo$period) + 1))))
@@ -161,9 +161,9 @@ for (i in 1:nrow(results_w_elo)) {
 
 # write.csv(results_w_elo, "data/results_w_elo.csv", row.names = FALSE)
 
-# # export for calibration check
-# results_w_elo %>%
-#   filter(is_copy == 0) %>%
+## export for calibration check
+# results_w_elo %>% 
+#   filter(is_copy == 0) %>% 
 #   write.csv(paste0("data/results_w_elo_", k, "_", revert, ".csv"), row.names = FALSE)
 
 results_w_elo %>% 
