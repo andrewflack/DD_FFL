@@ -9,7 +9,7 @@ wins_ytd <- results_w_elo %>%
   summarize(wins = sum(won_matchup)) %>% 
   arrange(desc(wins))
 
-n_sims <- 500
+n_sims <- 1000
 sim_results <- list()
 
 for (sim in 1:n_sims) {

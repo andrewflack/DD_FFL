@@ -39,12 +39,12 @@ w <- rep(1:13, each = 8, times = 8)
 t <- rep(1:8, times = 104)
 dat <- data.frame(y, w, t)
 
-# scores_raw <- dat %>%
-#   rowwise() %>%
-#   mutate(pts = getScore(y, w, t))
-# 
-# write.csv(scores_raw, "data/scores_raw.csv", row.names = FALSE)
-scores_raw <- read.csv("data/scores_raw.csv", stringsAsFactors = FALSE)
+scores_raw <- dat %>%
+  rowwise() %>%
+  mutate(pts = getScore(y, w, t))
+
+write.csv(scores_raw, "data/scores_raw.csv", row.names = FALSE)
+# scores_raw <- read.csv("data/scores_raw.csv", stringsAsFactors = FALSE)
 
 # join teams and owners and clean up ####################################
 teams_and_owners <- read.csv("data/ddffl_teamsandowners.csv")
@@ -159,7 +159,7 @@ for (i in 1:nrow(results_w_elo)) {
   elohist_i[results_w_elo$owner[i], results_w_elo$period[i] + 1] <- results_w_elo$elo_n[i]
 }
 
-# write.csv(results_w_elo, "data/results_w_elo.csv", row.names = FALSE)
+write.csv(results_w_elo, "data/results_w_elo.csv", row.names = FALSE)
 
 # # export for calibration check
 # results_w_elo %>%
@@ -197,3 +197,5 @@ current_ratings <- results_w_elo %>%
   mutate(rating = round(rating, 0))
 
 current_ratings
+
+source("src/rest_of_season_sim.R")
