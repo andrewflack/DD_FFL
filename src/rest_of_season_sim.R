@@ -5,11 +5,12 @@ weeks_played <- max(results_w_elo[which(results_w_elo$year == current_season), "
 
 wins_ytd <- results_w_elo %>% 
   filter(year == current_season) %>% 
+  filter(week <= weeks_played) %>% 
   group_by(owner) %>% 
   summarize(wins = sum(won_matchup)) %>% 
   arrange(desc(wins))
 
-n_sims <- 1000
+n_sims <- 5000
 sim_results <- list()
 
 for (sim in 1:n_sims) {
@@ -59,11 +60,19 @@ for (sim in 1:n_sims) {
     
   }
   
-  sim_wins <- sim_wins %>% arrange(desc(wins)) %>% mutate(place = seq_along(wins))
+  final_ratings <- sim_elo_n[, pd] %>% as.data.frame() %>% rownames_to_column()
+  colnames(final_ratings) <- c("owner", "rating")
+  
+  # assign finish place based on simulated wins and rating (tiebreaker)
+  sim_wins <- sim_wins %>% 
+    left_join(final_ratings, by = c("owner")) %>% 
+    arrange(desc(wins), desc(rating)) %>%
+    mutate(place = seq_along(wins))
+  
   sim_results[[sim]] <- sim_wins
 }
 
-sim_results_tall <- ldply(sim_results, data.frame)
+sim_results_tall <- plyr::ldply(sim_results, data.frame)
 
 sim_stats <- sim_results_tall %>% 
   group_by(owner) %>% 
