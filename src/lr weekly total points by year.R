@@ -1,42 +1,5 @@
-library(tidyverse)
-library(modelr)
-
-scores_raw <- read.csv("data/scores_raw.csv", stringsAsFactors = FALSE)
-
-# join teams and owners and clean up ####################################
-teams_and_owners <- read.csv("data/ddffl_teamsandowners.csv")
-
-scores_clean <- scores_raw %>% 
-  left_join(teams_and_owners, by = c("y" = "year", "t" = "teamID")) %>% 
-  rename(year = y, week = w, teamID = t)
-
-# prep results ###############################
-weekly_matchups <- read.csv("data/ddffl_weeklymatchups.csv")
-
-results <- scores_clean %>% 
-  left_join(weekly_matchups, by = c("year", "week", "teamID")) %>% 
-  left_join(teams_and_owners, by = c("year", "opp_teamID" = "teamID"))
-
-results <- results %>% 
-  left_join(results[, c("year", "week", "teamID", "pts")], by = c("year", "week", "opp_teamID" = "teamID")) %>% 
-  select(year, week, owner = owner.x, week_total = pts.x, opp_owner = owner.y, opp_week_total = pts.y)
-
-# add column for won_matchup
-results <- results %>% 
-  mutate(won_matchup = ifelse(week_total > opp_week_total, 1, ifelse(week_total == opp_week_total, .5, 0)))
-
-# manually fix ties
-results[which(results$year == 2014 & results$week == 10 & results$owner == "Nathan S"), "won_matchup"] <- 1
-results[which(results$year == 2014 & results$week == 10 & results$owner == "Craig B"), "won_matchup"] <- 0
-
-results[which(results$year == 2015 & results$week == 8 & results$owner == "John L"), "won_matchup"] <- 1
-results[which(results$year == 2015 & results$week == 8 & results$owner == "Andrew F"), "won_matchup"] <- 0
-
-results[which(results$year == 2015 & results$week == 10 & results$owner == "John N"), "won_matchup"] <- 1
-results[which(results$year == 2015 & results$week == 10 & results$owner == "Steve F"), "won_matchup"] <- 0
-
-results[which(results$year == 2016 & results$week == 10 & results$owner == "Jeff M"), "won_matchup"] <- 1
-results[which(results$year == 2016 & results$week == 10 & results$owner == "John L"), "won_matchup"] <- 0
+library(ProjectTemplate)
+load.project()
 
 # remove rows where both scores are 0 (games haven't been played yet)
 results <- results %>% filter(week_total != 0 & opp_week_total != 0)

@@ -1,10 +1,10 @@
 data_loading: FALSE
 cache_loading: FALSE
 recursive_loading: FALSE
-munging: FALSE
+munging: TRUE
 logging: FALSE
 load_libraries: TRUE
-libraries: plyr, dplyr, ggplot2, lubridate, XML, tidyr, class, stringr, rvest
+libraries: tidyverse, rvest, knitr
 as_factors: TRUE
 data_tables: FALSE
 version: 0.7

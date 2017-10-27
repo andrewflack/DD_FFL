@@ -1,0 +1,165 @@
+---
+title: "FFL Ratings and Simulation Dashboard"
+author: "Andrew Flack"
+date: "October 26, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ProjectTemplate)
+load.project()
+```
+
+```{r}
+current_ratings <- results_w_elo %>% 
+  tail(8) %>% 
+  mutate(one_week_change = elo_n - elo_i) %>% 
+  select(owner, rating = elo_n, one_week_change) %>% 
+  mutate_if(is.numeric, funs(round(., 0))) %>% 
+  arrange(desc(rating))
+
+current_season <- max(results_w_elo$year)
+weeks_played <- max(results_w_elo[which(results_w_elo$year == current_season), "week"])
+
+wins_ytd <- results_w_elo %>% 
+  filter(year == current_season) %>% 
+  filter(week <= weeks_played) %>% 
+  group_by(owner) %>% 
+  summarize(wins = sum(won_matchup)) %>% 
+  arrange(desc(wins))
+```
+
+
+```{r}
+n_sims <- 1000
+sim_results <- list()
+
+for (sim in 1:n_sims) {
+  
+  sim_wins <- wins_ytd
+  sim_elo_n <- elohist_n
+  
+  for (i in (weeks_played + 1):13) {
+    # print(i)
+    
+    # pull the matchups for one week at a time
+    week_matchups <- weekly_matchups %>% 
+      filter(year == current_season & week == i) %>% 
+      slice(seq(1, 7, by = 2))
+    
+    # now loop through each matchup
+    for (j in 1:nrow(week_matchups)) {
+      # print(j)
+      
+      t1 <- teams_and_owners[which(teams_and_owners$year == current_season & teams_and_owners$teamID == as.numeric(week_matchups[j, "teamID"])), "owner"]
+      t2 <- teams_and_owners[which(teams_and_owners$year == current_season & teams_and_owners$teamID == as.numeric(week_matchups[j, "opp_teamID"])), "owner"]
+      
+      pd <- ((current_season-2010)*13) + i-1
+      # print(pd)
+      
+      elo_1 <- sim_elo_n[as.character(t1), pd]
+      elo_2 <- sim_elo_n[as.character(t2), pd]
+      
+      t1_w_exp <- 1 - 1/((10^((elo_1 - elo_2)/400)) + 1)
+      
+      # simulate a single game
+      t1_won_matchup <- rbinom(1, 1, t1_w_exp)
+      t2_won_matchup <- 1 - t1_won_matchup
+      
+      # update ytd wins
+      sim_wins[which(sim_wins$owner == as.character(t1)), "wins"] <- as.numeric(sim_wins[which(sim_wins$owner == as.character(t1)), "wins"]) + t1_won_matchup
+      sim_wins[which(sim_wins$owner == as.character(t2)), "wins"] <- as.numeric(sim_wins[which(sim_wins$owner == as.character(t2)), "wins"]) + t2_won_matchup
+      
+      # update elo ratings
+      t1_elo_n <- elo_1 + k*(t1_won_matchup-t1_w_exp)
+      t2_elo_n <- elo_2 + k*(t2_won_matchup-(1-t1_w_exp))
+      
+      sim_elo_n[as.character(t1), pd + 1] <- t1_elo_n
+      sim_elo_n[as.character(t2), pd + 1] <- t2_elo_n
+      
+    }
+    
+  }
+  
+  final_ratings <- sim_elo_n[, pd] %>% as.data.frame() %>% rownames_to_column()
+  colnames(final_ratings) <- c("owner", "rating")
+  
+  # assign finish place based on simulated wins and rating (tiebreaker)
+  sim_wins <- sim_wins %>% 
+    left_join(final_ratings, by = c("owner")) %>% 
+    arrange(desc(wins), desc(rating)) %>%
+    mutate(place = seq_along(wins))
+  
+  sim_results[[sim]] <- sim_wins
+}
+
+sim_results_tall <- plyr::ldply(sim_results, data.frame)
+```
+
+```{r}
+sim_stats <- sim_results_tall %>% 
+  group_by(owner) %>% 
+  summarize(sim_wins = round(mean(wins), 2),
+            p_1st = sum(place == 1)/n_sims) %>% 
+  arrange(desc(sim_wins)) %>% 
+  left_join(wins_ytd, by = "owner") %>% 
+  select(owner, ytd_wins = wins, sim_wins, p_1st)
+
+sim_dashboard <- current_ratings %>% 
+  left_join(sim_stats, by = "owner")
+
+kable(sim_dashboard)
+```
+
+```{r}
+sim_results_tall %>% 
+  ggplot(aes(x = reorder(owner, wins, FUN = median), y = wins)) + 
+  geom_boxplot() + 
+  coord_flip()
+```
+
+```{r}
+sim_results_tall %>% 
+  group_by(wins) %>% 
+  count() %>% 
+  mutate(freq = n/sum(n)) %>% 
+  ggplot(aes(x = as.factor(wins), y = freq)) + 
+  geom_bar(stat = "identity")
+
+```
+
+```{r}
+sim_results_tall %>% 
+  group_by(wins, place) %>% 
+  count() %>% 
+  arrange(place, wins) %>% 
+  mutate(freq = n/sum(n)) %>% 
+  ggplot(aes(x = as.factor(wins), y = freq, fill = as.factor(place))) + 
+  geom_bar(stat = "identity") + 
+  facet_wrap(~place, nrow = 2) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(x = "Win Total", y = "P(Finish in Place | Win Total)", 
+       title = "Probability of Finishing in 1st - 8th Place",
+       subtitle = "Conditional on Win Total")
+
+
+```
+
+```{r}
+sim_results_tall %>% 
+  group_by(wins, place) %>% 
+  count() %>% 
+  arrange(place, wins) %>% 
+  mutate(freq = n/sum(n)) %>% 
+  ggplot(aes(x = as.factor(wins), y = freq, fill = as.factor(place))) + 
+  geom_bar(stat = "identity") + 
+  theme_minimal() +
+  theme(legend.title = element_blank()) +
+  labs(x = "Win Total", y = "P(Finish in Place | Win Total)", 
+       title = "Probability of Finishing in 1st - 8th Place",
+       subtitle = "Conditional on Win Total")
+```
+
