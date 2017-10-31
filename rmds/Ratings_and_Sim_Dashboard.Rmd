@@ -2,7 +2,11 @@
 title: "FFL Ratings and Simulation Dashboard"
 author: "Andrew Flack"
 date: "October 26, 2017"
-output: html_document
+output: blogdown::html_page
+params:
+  n_sims: 1000
+  current_season: 2017
+  weeks_played: 8
 ---
 
 ```{r setup, include=FALSE}
@@ -14,18 +18,16 @@ load.project()
 
 ```{r}
 current_ratings <- results_w_elo %>% 
-  tail(8) %>% 
+  filter(year == params$current_season) %>% 
+  filter(week == params$weeks_played) %>% 
   mutate(one_week_change = elo_n - elo_i) %>% 
   select(owner, rating = elo_n, one_week_change) %>% 
   mutate_if(is.numeric, funs(round(., 0))) %>% 
   arrange(desc(rating))
 
-current_season <- max(results_w_elo$year)
-weeks_played <- max(results_w_elo[which(results_w_elo$year == current_season), "week"])
-
 wins_ytd <- results_w_elo %>% 
-  filter(year == current_season) %>% 
-  filter(week <= weeks_played) %>% 
+  filter(year == params$current_season) %>% 
+  filter(week <= params$weeks_played) %>% 
   group_by(owner) %>% 
   summarize(wins = sum(won_matchup)) %>% 
   arrange(desc(wins))
@@ -33,30 +35,29 @@ wins_ytd <- results_w_elo %>%
 
 
 ```{r}
-n_sims <- 1000
 sim_results <- list()
 
-for (sim in 1:n_sims) {
+for (sim in 1:params$n_sims) {
   
   sim_wins <- wins_ytd
   sim_elo_n <- elohist_n
   
-  for (i in (weeks_played + 1):13) {
+  for (i in (params$weeks_played + 1):13) {
     # print(i)
     
     # pull the matchups for one week at a time
     week_matchups <- weekly_matchups %>% 
-      filter(year == current_season & week == i) %>% 
+      filter(year == params$current_season & week == i) %>% 
       slice(seq(1, 7, by = 2))
     
     # now loop through each matchup
     for (j in 1:nrow(week_matchups)) {
       # print(j)
       
-      t1 <- teams_and_owners[which(teams_and_owners$year == current_season & teams_and_owners$teamID == as.numeric(week_matchups[j, "teamID"])), "owner"]
-      t2 <- teams_and_owners[which(teams_and_owners$year == current_season & teams_and_owners$teamID == as.numeric(week_matchups[j, "opp_teamID"])), "owner"]
+      t1 <- teams_and_owners[which(teams_and_owners$year == params$current_season & teams_and_owners$teamID == as.numeric(week_matchups[j, "teamID"])), "owner"]
+      t2 <- teams_and_owners[which(teams_and_owners$year == params$current_season & teams_and_owners$teamID == as.numeric(week_matchups[j, "opp_teamID"])), "owner"]
       
-      pd <- ((current_season-2010)*13) + i-1
+      pd <- ((params$current_season-2010)*13) + i-1
       # print(pd)
       
       elo_1 <- sim_elo_n[as.character(t1), pd]
@@ -102,7 +103,7 @@ sim_results_tall <- plyr::ldply(sim_results, data.frame)
 sim_stats <- sim_results_tall %>% 
   group_by(owner) %>% 
   summarize(sim_wins = round(mean(wins), 2),
-            p_1st = sum(place == 1)/n_sims) %>% 
+            p_1st = sum(place == 1)/params$n_sims) %>% 
   arrange(desc(sim_wins)) %>% 
   left_join(wins_ytd, by = "owner") %>% 
   select(owner, ytd_wins = wins, sim_wins, p_1st)
@@ -114,13 +115,39 @@ kable(sim_dashboard)
 ```
 
 ```{r}
+owner_order <- sim_results_tall %>%
+  group_by(owner) %>%
+  summarize(avg_wins = mean(wins)) %>%
+  arrange(desc(avg_wins)) %>%
+  select(owner) %>%
+  collect() %>%
+  .[["owner"]]
+
+sim_results_tall$owner_f <- ordered(sim_results_tall$owner, owner_order)
+
+sim_results_tall %>%
+  group_by(owner_f, wins) %>%
+  count() %>%
+  mutate(freq = n/params$n_sims) %>%
+  ggplot(aes(x = as.factor(wins), y = freq, fill = owner_f)) +
+  geom_bar(stat = "identity") +
+  facet_grid(owner_f ~ ., switch = "y") +
+  scale_y_continuous(position = "right") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        strip.text.y = element_text(angle = 180)) +
+  labs(x = "Wins", y = NULL, title = "Predicted Win Totals")
+```
+
+
+```{r, eval = FALSE}
 sim_results_tall %>% 
   ggplot(aes(x = reorder(owner, wins, FUN = median), y = wins)) + 
   geom_boxplot() + 
   coord_flip()
 ```
 
-```{r}
+```{r, eval = FALSE}
 sim_results_tall %>% 
   group_by(wins) %>% 
   count() %>% 
@@ -130,7 +157,7 @@ sim_results_tall %>%
 
 ```
 
-```{r}
+```{r, eval = FALSE}
 sim_results_tall %>% 
   group_by(wins, place) %>% 
   count() %>% 
@@ -148,7 +175,7 @@ sim_results_tall %>%
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 sim_results_tall %>% 
   group_by(wins, place) %>% 
   count() %>% 
@@ -161,5 +188,27 @@ sim_results_tall %>%
   labs(x = "Win Total", y = "P(Finish in Place | Win Total)", 
        title = "Probability of Finishing in 1st - 8th Place",
        subtitle = "Conditional on Win Total")
+```
+
+```{r}
+next_week_matchups <- weekly_matchups %>% 
+      filter(year == params$current_season & week == params$weeks_played + 1) %>% 
+      slice(seq(1, 7, by = 2))
+
+next_week_matchups %>% 
+  left_join(teams_and_owners, by = c("teamID", "year")) %>% 
+  left_join(teams_and_owners, by = c("opp_teamID" = "teamID", "year")) %>% 
+  select(-name.x, -name.y) %>% 
+  rename(owner = owner.x, opp_owner = owner.y) %>% 
+  left_join(current_ratings[, c("owner", "rating")], by = "owner") %>% 
+  left_join(current_ratings[, c("owner", "rating")], by = c("opp_owner" = "owner")) %>% 
+  rename(rating = rating.x, opp_rating = rating.y) %>% 
+  mutate(w_exp = round(1 - 1/((10^((rating - opp_rating)/400)) + 1), 2)) %>% 
+  select(owner, opp_owner, w_exp) %>% 
+  transmute(matchup = ifelse(w_exp >= .5, paste0(owner, " over ", opp_owner), 
+                             paste0(opp_owner, " over ", owner)), 
+            w_exp = ifelse(w_exp >= .5, w_exp, 1-w_exp)) %>% 
+  arrange(desc(w_exp)) %>% 
+  kable()
 ```
 

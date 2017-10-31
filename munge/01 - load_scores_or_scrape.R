@@ -29,7 +29,8 @@ if (file.exists("data/scores_raw.csv")) {
   # print(paste0("Last Year: ", last_year, ", Last Week: ", last_week))
   
   # check if new data exists by pulling one score
-  new_data <- !is.na(getScore(last_year, last_week + 1, 1))
+  last_score <- getScore(last_year, last_week + 1, 1)
+  new_data <- !(is.na(last_score) | last_score == 0)
   
   if (new_data) {
     print("New Data Exists: Scraping...")

@@ -14,3 +14,5 @@ results <- results %>%
 results <- results %>% 
   mutate(won_matchup = ifelse(week_total > opp_week_total, 1, ifelse(week_total == opp_week_total, .5, 0)))
 
+# remove rows where both scores are 0 (games haven't been played yet)
+results <- results %>% filter(week_total != 0 & opp_week_total != 0)

@@ -19,10 +19,11 @@ results_w_elo <- results_w_elo %>%
   mutate(new_owner = ifelse((owner_n == 1 & new_season == 1) | (owner_n == 1 & year == 2010), 1, 0))
 
 # add "period" to count consecutive weeks across full history
-results_w_elo$period <- rep(1:((length(unique(results_w_elo$year)))*13), each = 8)
-
-# remove rows where both scores are 0 (games haven't been played yet)
-results_w_elo <- results_w_elo %>% filter(week_total != 0 & opp_week_total != 0)
+# results_w_elo$period <- rep(1:((length(unique(results_w_elo$year)))*13), each = 8)
+results_w_elo <- results_w_elo %>% 
+  mutate(yrwk = paste0(year, week)) %>% 
+  mutate(period = CountDistinctAlong(yrwk)) %>% 
+  select(-yrwk)
 
 # add margin of victory (mov)
 results_w_elo <- results_w_elo %>% 
