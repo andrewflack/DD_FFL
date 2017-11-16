@@ -1,0 +1,36 @@
+---
+title: Introducing Fantasy Football Elo Ratings
+author: Andrew Flack
+date: '2017-08-31'
+slug: introducing-fantasy-football-elo-ratings
+categories: []
+tags: []
+output: 
+  blogdown::html_page
+params:
+  current_season: 2016
+---
+
+```{r echo = FALSE, include = FALSE}
+knitr::opts_knit$set(root.dir = '../.')
+```
+```{r echo = FALSE, include=FALSE}
+library(ProjectTemplate)
+load.project()
+```
+
+```{r echo = FALSE}
+knitr::read_chunk('src/introducing fantasy football elo ratings.R')
+```
+
+## Elo Ratings Background
+
+## Tuning the model parameters
+
+## Is the model well-calibrated?
+
+## How have the ratings changed over time?
+```{r echo = FALSE}
+<<elo_history_plot>>
+```
+

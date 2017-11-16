@@ -4,7 +4,7 @@ author: "Andrew Flack"
 date: "October 26, 2017"
 output: blogdown::html_page
 params:
-  n_sims: 1000
+  n_sims: 2500
   current_season: 2017
   weeks_played: 8
 ---

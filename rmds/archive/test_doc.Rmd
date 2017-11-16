@@ -1,0 +1,39 @@
+---
+author: "Andrew Flack"
+date: "October 31, 2017"
+output: 
+  blogdown::html_page
+params:
+  n_sims: 1000
+  current_season: 2017
+  weeks_played: 8
+title: "`r paste0("FFL Ratings and Simulation Dashboard - Week ", params$weeks_played, " Update)`"
+---
+
+```{r echo=FALSE}
+n_sims <- params$n_sims
+current_season <- params$current_season
+weeks_played <- params$weeks_played
+
+knitr::read_chunk('in_season_weekly_updates.R')
+```
+
+
+```{r echo = FALSE}
+<<load_project>>
+<<current_ratings>>
+<<wins_ytd>>
+<<simulate_season>>
+```
+
+```{r echo = FALSE}
+<<sim_dashboard>>
+```
+
+```{r echo = FALSE}
+<<predicted_wins_graphic>>
+```
+
+```{r echo = FALSE}
+<<next_week_matchups>>
+```
