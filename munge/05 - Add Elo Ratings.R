@@ -1,6 +1,6 @@
 # add elo ratings #########################
 
-AddEloRatings <- function(df, k = 10, revert = 3/4, playoff_revert = 2/3, init = 1500, keep_all = FALSE, verbose = FALSE) {
+AddEloRatings <- function(df, k = 12.5, revert = .4, playoff_revert = .7, init = 1500, keep_all = FALSE, verbose = FALSE) {
   
   # is new season
   df_w_elo <- df %>% 

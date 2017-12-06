@@ -1,7 +1,7 @@
 # check to see if new data exists and scrape if necessary
 
 years <- 2010:2017
-weeks <- 13
+weeks <- 16
 teams <- 8
 
 y <- rep(years, each = length(years)*weeks)

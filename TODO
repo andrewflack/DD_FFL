@@ -1,3 +1,5 @@
-[] 2012 Week 14 matchups are wrong - seedings wrong (John N and Adam S swapped), need to account for East/West through 2012 season
+[X] 2012 Week 14 matchups are wrong - seedings wrong (John N and Adam S swapped), need to account for East/West through 2012 season
 [X] 2014 Week 14 matchups are wrong - happens because ties need to be resolved before setting seeds
-[] Week 15 playoff matchups are wrong
+[X] Week 15 playoff matchups are wrong
+[ ] Rather than assuming higher rating will always have more points (at end of simulation), model P(score more points | difference     in ratings)
+[ ] Model pts_for given rating (need this in order to include playoffs in simulation because it is needed to assign playoff seeds)

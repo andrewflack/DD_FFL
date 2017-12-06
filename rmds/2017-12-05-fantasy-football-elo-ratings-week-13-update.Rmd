@@ -1,0 +1,80 @@
+---
+title: Fantasy Football Elo Ratings Week 13 Update
+author: Andrew Flack
+date: '2017-12-05'
+slug: fantasy-football-elo-ratings-week-13-update
+categories: []
+tags: []
+output: 
+  blogdown::html_page
+params:
+  n_sims: 10000
+  current_season: 2017
+  weeks_played: 13
+---
+
+```{r echo = FALSE, include = FALSE}
+knitr::opts_knit$set(root.dir = '../.')
+```
+```{r echo = FALSE, include=FALSE}
+library(ProjectTemplate)
+load.project()
+```
+
+```{r echo = FALSE}
+knitr::read_chunk('rmds/in_season_weekly_updates.R')
+```
+
+```{r echo = FALSE}
+<<current_ratings>>
+<<wins_ytd>>
+# <<simulate_season>>
+# <<sim_dashboard>>
+
+# leader <- sim_dashboard[which.max(sim_dashboard$p_1st), "owner"]
+# leader_p_win <- sim_dashboard[which.max(sim_dashboard$p_1st), "p_1st"]
+```
+
+## Dashboard
+
+That's a wrap! John L is our regular season champion! 
+
+```{r echo = FALSE}
+current_ratings %>% 
+  left_join(wins_ytd, by = c("owner")) %>% 
+  kable(col.names = c("Owner", "Rating", "1 Week Change", "YTD Wins"))
+
+# sim_dashboard %>% 
+#   select(-current_season, -weeks_played) %>% 
+#   kable(col.names = c("Owner", "Rating", "1 Week Change", "YTD Wins", "Sim Wins", "P(1st)"),
+#         align = c("c", "c", "c", "c", "c", "c"))
+```
+
+## How the Odds Have Changed
+```{r echo = FALSE, message = FALSE, fig.align = "center", fig.width = 9}
+sim_file_names <- list.files("data/", pattern = "sim_dashboard")
+sim_file_names <- sapply(sim_file_names, function(x) paste0("data/", x), USE.NAMES = FALSE)
+all_sim_results <- do.call(rbind, lapply(sim_file_names, read_csv))
+
+week13 <- current_ratings %>% 
+  select(owner, rating) %>% 
+  mutate(weeks_played = 13)
+
+week13$p_1st <- NA
+week13[which(week13$owner == "John L"), "p_1st"] <- 1
+week13[which(week13$owner != "John L"), "p_1st"] <- 0
+
+all_sim_results %>% 
+  filter(current_season == params$current_season & weeks_played <= params$weeks_played) %>%
+  select(weeks_played, owner, p_1st) %>% 
+  bind_rows(week13) %>% 
+  gather(key = variable, value = value, owner) %>% 
+  ggplot(aes(x = as.factor(weeks_played), y = p_1st, colour = value, group = value)) + 
+  geom_line(size = 2, alpha = .75) +
+  theme_minimal() +
+  labs(x = "Week", 
+       y = "Probability", 
+       title = "Probability of Winning Regular Season Championship By Week") +
+  guides(colour = guide_legend(title = NULL))
+```
+

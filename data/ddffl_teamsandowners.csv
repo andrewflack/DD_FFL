@@ -1,65 +1,65 @@
-year,teamID,name,owner
-2010,1,Over the Line,Jeff M
-2010,2,Annandale Anthrax,Nathan S
-2010,3,Beltway Bandits,Steve C
-2010,4,Schmo Hawks,Brian S
-2010,5,Fuzzy Beasts,Chris F
-2010,6,Short Bus,Craig B
-2010,7,Free Mark Chmura,Mike B
-2010,8,CVille Yarghhh,Steve F
-2011,1,Smell the Glove,Jeff M
-2011,2,Annandale Anthrax,Nathan S
-2011,3,Beltway Bandits,Steve C
-2011,4,Schmo Hawks,Brian S
-2011,5,Fuzzy Beasts,Chris F
-2011,6,Short Bus,Craig B
-2011,7,Huge Mistake,Andrew F
-2011,8,CVille Yarghhh,Steve F
-2012,1,Smell the Glove,Jeff M
-2012,2,Annandale Anthrax,Nathan S
-2012,3,Beltway Bandits,Steve C
-2012,4,Child Fury,John N
-2012,5,Fuzzy Beasts,Adam S
-2012,6,Short Bus,Craig B
-2012,7,Huge Mistake,Andrew F
-2012,8,CVille Yarghhh,Steve F
-2013,1,Smell the Glove,Jeff M
-2013,2,Annandale Anthrax,Nathan S
-2013,3,Beltway Bandits,Steve C
-2013,4,Failure to Communicate,John N
-2013,5,Marmoset Circus,John L
-2013,6,Short Bus,Craig B
-2013,7,Norfolk Nabbers,Andrew F
-2013,8,CVille Yarghhh,Steve F
-2014,1,Draft Champion,Jeff M
-2014,2,Annandale Anthrax,Nathan S
-2014,3,Beltway Bandits,Steve C
-2014,4,Failure to Communicate,John N
-2014,5,Marmoset Circus,John L
-2014,6,Short Bus,Craig B
-2014,7,Norfolk Nabbers,Andrew F
-2014,8,CVille Yarghhh,Steve F
-2015,1,Draft Champion,Jeff M
-2015,2,Annandale Anthrax,Nathan S
-2015,3,Beltway Bandits,Steve C
-2015,4,Failure to Communicate,John N
-2015,5,Marmoset Circus,John L
-2015,6,Somebody Elses Problem,Craig B
-2015,7,Norfolk Nabbers,Andrew F
-2015,8,CVille Yarghhh,Steve F
-2016,1,Draft Champion,Jeff M
-2016,2,Annandale Anthrax,Nathan S
-2016,3,Beltway Bandits,Steve C
-2016,4,Failure to Communicate,John N
-2016,5,Marmoset Circus,John L
-2016,6,Everyones Problem,Craig B
-2016,7,Norfolk Nabbers,Andrew F
-2016,8,CVille Yarghhh,Steve F
-2017,1,Draft Champion,Jeff M
-2017,2,Annandale Anthrax,Nathan S
-2017,3,Beltway Bandits,Steve C
-2017,4,Bayou Brawlers,John N
-2017,5,Marmoset Circus,John L
-2017,6,Welcome to Crazytown,Craig B
-2017,7,Norfolk Nabbers,Andrew F
-2017,8,CVille Yarghhh,Steve F
+year,teamID,name,owner,division
+2010,1,Over the Line,Jeff M,East
+2010,2,Annandale Anthrax,Nathan S,East
+2010,3,Beltway Bandits,Steve C,East
+2010,4,Schmo Hawks,Brian S,East
+2010,5,Fuzzy Beasts,Chris F,West
+2010,6,Short Bus,Craig B,West
+2010,7,Free Mark Chmura,Mike B,West
+2010,8,CVille Yarghhh,Steve F,West
+2011,1,Smell the Glove,Jeff M,East
+2011,2,Annandale Anthrax,Nathan S,East
+2011,3,Beltway Bandits,Steve C,East
+2011,4,Schmo Hawks,Brian S,East
+2011,5,Fuzzy Beasts,Chris F,West
+2011,6,Short Bus,Craig B,West
+2011,7,Huge Mistake,Andrew F,West
+2011,8,CVille Yarghhh,Steve F,West
+2012,1,Smell the Glove,Jeff M,East
+2012,2,Annandale Anthrax,Nathan S,East
+2012,3,Beltway Bandits,Steve C,West
+2012,4,Child Fury,John N,West
+2012,5,Fuzzy Beasts,Adam S,East
+2012,6,Short Bus,Craig B,East
+2012,7,Huge Mistake,Andrew F,West
+2012,8,CVille Yarghhh,Steve F,West
+2013,1,Smell the Glove,Jeff M,East
+2013,2,Annandale Anthrax,Nathan S,East
+2013,3,Beltway Bandits,Steve C,East
+2013,4,Failure to Communicate,John N,East
+2013,5,Marmoset Circus,John L,East
+2013,6,Short Bus,Craig B,East
+2013,7,Norfolk Nabbers,Andrew F,East
+2013,8,CVille Yarghhh,Steve F,East
+2014,1,Draft Champion,Jeff M,East
+2014,2,Annandale Anthrax,Nathan S,East
+2014,3,Beltway Bandits,Steve C,East
+2014,4,Failure to Communicate,John N,East
+2014,5,Marmoset Circus,John L,East
+2014,6,Short Bus,Craig B,East
+2014,7,Norfolk Nabbers,Andrew F,East
+2014,8,CVille Yarghhh,Steve F,East
+2015,1,Draft Champion,Jeff M,East
+2015,2,Annandale Anthrax,Nathan S,East
+2015,3,Beltway Bandits,Steve C,East
+2015,4,Failure to Communicate,John N,East
+2015,5,Marmoset Circus,John L,East
+2015,6,Somebody Elses Problem,Craig B,East
+2015,7,Norfolk Nabbers,Andrew F,East
+2015,8,CVille Yarghhh,Steve F,East
+2016,1,Draft Champion,Jeff M,East
+2016,2,Annandale Anthrax,Nathan S,East
+2016,3,Beltway Bandits,Steve C,East
+2016,4,Failure to Communicate,John N,East
+2016,5,Marmoset Circus,John L,East
+2016,6,Everyones Problem,Craig B,East
+2016,7,Norfolk Nabbers,Andrew F,East
+2016,8,CVille Yarghhh,Steve F,East
+2017,1,Draft Champion,Jeff M,East
+2017,2,Annandale Anthrax,Nathan S,East
+2017,3,Beltway Bandits,Steve C,East
+2017,4,Bayou Brawlers,John N,East
+2017,5,Marmoset Circus,John L,East
+2017,6,Welcome to Crazytown,Craig B,East
+2017,7,Norfolk Nabbers,Andrew F,East
+2017,8,CVille Yarghhh,Steve F,East

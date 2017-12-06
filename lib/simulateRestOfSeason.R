@@ -62,7 +62,12 @@ simulateRestOfSeason <- function(n_sims, current_season, weeks_played, .elohist_
       arrange(desc(wins), desc(rating)) %>%
       mutate(place = seq_along(wins))
     
-    sim_results[[sim]] <- sim_wins
+    sim_results[[sim]] <- sim_wins # regular season wins
+    
+    #### end of regular season, now simulate playoffs ###
+    
+    # Assign playoff seeds
+    
   }
   
   sim_results_tall <- plyr::ldply(sim_results, data.frame)

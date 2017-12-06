@@ -9,7 +9,7 @@ results <- scores_clean %>%
 
 results <- results %>% 
   left_join(results[, c("year", "week", "teamID", "pts")], by = c("year", "week", "opp_teamID" = "teamID")) %>% 
-  select(year, week, owner = owner.x, week_total = pts.x, opp_owner = owner.y, opp_week_total = pts.y)
+  select(year, week, owner = owner.x, week_total = pts.x, opp_owner = owner.y, opp_week_total = pts.y, division = division.x)
 
 # add column for won_matchup
 results <- results %>% 

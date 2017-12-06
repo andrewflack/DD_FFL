@@ -32,6 +32,12 @@ parameter_space <- parameter_space %>%
 
 write.csv(parameter_space, file = "data/parameters_w_brier.csv", row.names = FALSE)
 
+# look at the top 10 best combinations
+parameter_space %>% arrange(score) %>% head(10)
+
+# save the best combination
+optimal_params <- parameter_space[which.min(parameter_space$score),]
+
 parameter_space %>%
   ggplot(aes(x = as.factor(k), y = score, colour = as.factor(revert))) + 
   geom_line(aes(group = revert)) + 
@@ -41,6 +47,7 @@ parameter_space %>%
        y = "Brier Score",
        title = "Historical Prediction Error for Varying Parameters",
        subtitle = "Panels: Reversion Entering Playoffs") +
-  guides(colour = guide_legend(title = "Reversion Between\nSeasons"))
+  guides(colour = guide_legend(title = "Reversion Between\nSeasons")) +
+  geom_point(data = optimal_params, aes(x = as.factor(k), y = score), colour = "red", size = 2)
 
-parameter_space[which.min(parameter_space$score),]
+ggsave("graphs/parameter_search.png")
