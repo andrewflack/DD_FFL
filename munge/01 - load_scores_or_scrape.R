@@ -1,12 +1,12 @@
 # check to see if new data exists and scrape if necessary
 
-years <- 2010:2017
+years <- 2010:2018
 weeks <- 16
 teams <- 8
 
-y <- rep(years, each = length(years)*weeks)
+y <- rep(years, each = teams*weeks)
 w <- rep(1:weeks, each = teams, times = length(years))
-t <- rep(1:length(years), times = length(years)*weeks)
+t <- rep(1:length(years), times = teams*weeks)
 dat <- data.frame(y, w, t)
 
 if (file.exists("data/scores_raw.csv")) {

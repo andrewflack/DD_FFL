@@ -7,5 +7,10 @@ load_libraries: TRUE
 libraries: tidyverse, rvest, knitr, kableExtra, stringr
 as_factors: TRUE
 data_tables: FALSE
-version: 0.7
+version: 0.8.2
 attach_internal_libraries: TRUE
+data_loading_header: TRUE
+data_ignore:
+logging_level: INFO
+cache_loaded_data: FALSE
+sticky_variables: NONE
