@@ -4,7 +4,7 @@
 current_ratings <- results_w_elo %>% 
   filter(year == params$current_season - 1) %>% 
   filter(week == 13) %>% 
-  mutate(new_rating = init*revert + elo_n*(1-revert)) %>% 
+  mutate(new_rating = params$init*params$revert + elo_n*(1-params$revert)) %>%
   select(owner, rating = new_rating) %>% 
   mutate_if(is.numeric, funs(round(., 0))) %>% 
   arrange(desc(rating))
