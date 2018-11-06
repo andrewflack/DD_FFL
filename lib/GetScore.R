@@ -14,10 +14,17 @@ getScore <- function(year, week, teamID){
   
   if(year == 2016) {
     score <- read_html(box) %>% 
-      html_node("div:nth-child(8) .totalScore") %>% 
+      # html_node("div:nth-child(8) .totalScore") %>% 
+      html_node("#playertable_0 .playerTableBgRowTotals .appliedPoints") %>% 
       html_text() %>% 
       as.numeric()
   } else if (year == 2017) {
+    score <- read_html(box) %>% 
+      # html_node("div:nth-child(6) .totalScore") %>% 
+      html_node("div:nth-child(8) .totalScore") %>% 
+      html_text() %>% 
+      as.numeric()    
+  } else if (year == 2018) {
     score <- read_html(box) %>% 
       html_node("div:nth-child(6) .totalScore") %>% 
       html_text() %>% 

@@ -3,7 +3,7 @@
 ## ---- current_ratings
 current_ratings <- results_w_elo %>% 
   filter(year == params$current_season - 1) %>% 
-  filter(week == 13) %>% 
+  filter(week == max(week)) %>% 
   mutate(new_rating = params$init*params$revert + elo_n*(1-params$revert)) %>%
   select(owner, rating = new_rating) %>% 
   mutate_if(is.numeric, funs(round(., 0))) %>% 
@@ -84,3 +84,4 @@ next_week_matchups <- weekly_matchups %>%
             w_exp = ifelse(w_exp >= .5, w_exp, 1-w_exp)) %>% 
   arrange(desc(w_exp))
 ## ---- end next_week_matchups
+

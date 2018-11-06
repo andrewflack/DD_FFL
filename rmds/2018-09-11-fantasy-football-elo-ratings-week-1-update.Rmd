@@ -1,8 +1,8 @@
 ---
-title: 2018 Fantasy Football Season Preview
+title: Fantasy Football Elo Ratings Week 1 Update
 author: Andrew Flack
-date: '2018-09-01'
-slug: 2018-fantasy-football-season-preview
+date: '2018-09-11'
+slug: fantasy-football-elo-ratings-week-1-update
 categories: []
 tags: []
 output: 
@@ -10,9 +10,7 @@ output:
 params:
   n_sims: 10000
   current_season: 2018
-  weeks_played: 0
-  init: 1500
-  revert: .4
+  weeks_played: 1
 ---
 
 ```{r echo = FALSE, include = FALSE}
@@ -24,7 +22,7 @@ load.project()
 ```
 
 ```{r echo = FALSE}
-knitr::read_chunk('rmds/season_preview.R')
+knitr::read_chunk('rmds/in_season_weekly_updates.R')
 ```
 
 ```{r echo = FALSE}
@@ -37,19 +35,15 @@ leader <- sim_dashboard[which.max(sim_dashboard$p_1st), "owner"]
 leader_p_win <- sim_dashboard[which.max(sim_dashboard$p_1st), "p_1st"]
 ```
 
-## The `r params$current_season` season is here! 
+## Dashboard
 
-It's a clean slate, with all owners tied for first place at 0 wins. Will this be your year?
-
-Although no games have been played, we do know a little bit about the strength of each owner using Elo ratings, so we can make some early predictions. Elo ratings from the end of the `r params$current_season - 1` season have been reverted back towards the mean slightly, and are shown in the table below. 
-
-Simulating the `r params$current_season` season `r params$n_sims` times, `r leader` is our most likely regular season champion, with a `r round(leader_p_win*100, 1)`% chance of taking home the title.
+Through `r params$weeks_played` weeks, `r leader` is our most likely regular season champion, with a `r leader_p_win*100`% chance of taking home the title.
 
 ```{r echo = FALSE}
 sim_dashboard %>% 
   select(-current_season, -weeks_played) %>% 
-  kable(col.names = c("Owner", "Rating", "YTD Wins", "Sim Wins", "P(1st)"),
-        align = c("c", "c", "c", "c", "c"))
+  kable(col.names = c("Owner", "Rating", "1 Week Change", "YTD Wins", "Sim Wins", "P(1st)"),
+        align = c("c", "c", "c", "c", "c", "c"))
 ```
 
 ## Predicted Win Totals

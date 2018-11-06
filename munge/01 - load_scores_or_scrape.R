@@ -6,7 +6,7 @@ teams <- 8
 
 y <- rep(years, each = teams*weeks)
 w <- rep(1:weeks, each = teams, times = length(years))
-t <- rep(1:length(years), times = teams*weeks)
+t <- rep(1:teams, times = length(years)*weeks)
 dat <- data.frame(y, w, t)
 
 if (file.exists("data/scores_raw.csv")) {
@@ -26,17 +26,23 @@ if (file.exists("data/scores_raw.csv")) {
     .[["w"]] %>% 
     max()
   
-  # print(paste0("Last Year: ", last_year, ", Last Week: ", last_week))
+  print(paste0("Last Year: ", last_year, ", Last Week: ", last_week))
   
   # check if new data exists by pulling one score
-  last_score <- getScore(last_year, last_week + 1, 1)
+  if(last_week == 16){
+    last_week <- 1
+    last_score <- getScore(last_year + 1, last_week, 1)
+  } else {
+    last_score <- getScore(last_year, last_week + 1, 1)
+  }
+  
   new_data <- !(is.na(last_score) | last_score == 0)
   
   if (new_data) {
     print("New Data Exists: Scraping...")
     
     new_dat <- dat %>% 
-      filter(y >= last_year & w > last_week)
+      filter(y >= last_year)
     
     scores_raw_new <- new_dat %>% 
       rowwise() %>%

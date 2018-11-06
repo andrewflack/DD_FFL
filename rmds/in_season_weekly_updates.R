@@ -95,11 +95,13 @@ all_sim_results %>%
   filter(current_season == params$current_season & weeks_played <= params$weeks_played) %>% 
   select(weeks_played, owner, p_1st) %>% 
   gather(key = variable, value = value, owner) %>% 
-  ggplot(aes(x = as.factor(weeks_played), y = p_1st, colour = value, group = value)) + 
+  ggplot(aes(x = weeks_played, y = p_1st, colour = value, group = value)) + 
   geom_line(size = 2, alpha = .75) +
   theme_minimal() +
   labs(x = "Week", 
        y = "Probability", 
        title = "Probability of Winning Regular Season Championship By Week") +
-  guides(colour = guide_legend(title = NULL))
+  guides(colour = guide_legend(title = NULL)) +
+  scale_x_continuous(breaks = c(0:13), limits = c(0, 13)) +
+  ylim(0, 1)
 ## ---- end win_probs_through_season

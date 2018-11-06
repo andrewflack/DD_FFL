@@ -57,9 +57,16 @@ simulateRestOfSeason <- function(n_sims, current_season, weeks_played, .elohist_
     colnames(final_ratings) <- c("owner", "rating")
     
     # assign finish place based on simulated wins and rating (tiebreaker)
-    sim_wins <- sim_wins %>% 
-      left_join(final_ratings, by = c("owner")) %>% 
-      arrange(desc(wins), desc(rating)) %>%
+    # sim_wins <- sim_wins %>% 
+    #   left_join(final_ratings, by = c("owner")) %>% 
+    #   arrange(desc(wins), desc(rating)) %>%
+    #   mutate(place = seq_along(wins))
+    sim_wins <- sim_wins %>%
+      left_join(final_ratings, by = c("owner")) %>%
+      group_by(wins) %>%
+      sample_frac(weight = rating) %>%
+      arrange(desc(wins)) %>%
+      ungroup() %>%
       mutate(place = seq_along(wins))
     
     sim_results[[sim]] <- sim_wins # regular season wins
