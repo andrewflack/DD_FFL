@@ -1,0 +1,45 @@
+---
+title: Fantasy Football Elo Ratings Week 13 Update
+author: Andrew Flack
+date: '2018-12-04'
+slug: fantasy-football-elo-ratings-week-13-update
+categories: []
+tags: []
+output: 
+  blogdown::html_page
+params:
+  n_sims: 10
+  current_season: 2018
+  weeks_played: 13
+---
+
+```{r echo = FALSE, include = FALSE}
+knitr::opts_knit$set(root.dir = '../.')
+```
+```{r echo = FALSE, include=FALSE}
+library(ProjectTemplate)
+load.project()
+```
+
+```{r echo = FALSE}
+knitr::read_chunk('rmds/in_season_weekly_updates.R')
+```
+
+```{r echo = FALSE}
+<<current_ratings>>
+<<wins_ytd>>
+# <<simulate_season>>
+# <<sim_dashboard>>
+# 
+# leader <- sim_dashboard[which.max(sim_dashboard$p_1st), "owner"]
+# leader_p_win <- sim_dashboard[which.max(sim_dashboard$p_1st), "p_1st"]
+```
+
+## Dashboard
+
+That's a wrap! Andrew F is our 2018 regular season champion!
+
+## How the Odds Have Changed
+```{r echo = FALSE, message = FALSE, fig.align = "center", fig.width = 9}
+<<win_probs_through_season>>
+```

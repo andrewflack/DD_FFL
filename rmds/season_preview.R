@@ -20,6 +20,9 @@ wins_ytd <- results_w_elo %>%
 
 ## ---- simulate_season
 sim_results_tall <- simulateRestOfSeason(params$n_sims, params$current_season, params$weeks_played)
+
+filename <- paste0("data/sim_results_", params$current_season, "_week_", params$weeks_played, ".csv")
+write.csv(sim_results_tall, filename, row.names = FALSE)
 ## ---- end simulate_season
 
 ## ---- sim_dashboard

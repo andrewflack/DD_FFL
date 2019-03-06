@@ -28,9 +28,44 @@ knitr::read_chunk('src/introducing fantasy football elo ratings.R')
 ## Tuning the model parameters
 
 ## Is the model well-calibrated?
+```{r, echo = FALSE}
+sim_distribution <- read_csv("data/sim_results_2018_week_0.csv") %>% 
+  mutate(wins = factor(wins, levels = c(0:13))) %>% 
+  group_by(wins) %>% 
+  tally() %>% 
+  mutate(sim_owners_per_season = (n/sum(n))*8) %>% 
+  complete(wins, fill = list(sim_owners_per_season = 0)) %>% 
+  select(-n)
+
+actual_and_sim_dists <- results_w_elo %>% 
+  filter(week %in% c(1:13)) %>% 
+  group_by(year, owner) %>% 
+  summarize(wins = sum(won_matchup)) %>% 
+  arrange(desc(wins)) %>% 
+  ungroup() %>% 
+  mutate(wins = factor(wins, levels = c(0:13))) %>% 
+  group_by(wins) %>% 
+  tally() %>% 
+  mutate(owners_per_season = (n/sum(n))*8) %>% 
+  complete(wins, fill = list(owners_per_season = 0)) %>% 
+  select(-n) %>% 
+  left_join(sim_distribution, by = c("wins"))
+
+actual_and_sim_dists %>% 
+  ggplot() + 
+  geom_bar(aes(x = wins, y = owners_per_season), stat = "identity") + 
+  geom_line(aes(x = wins, y = sim_owners_per_season, group = 1), colour = "red", size = 1) +
+  theme_minimal() +
+  labs(x = "Wins", y = "Owners per Season with Win Total")
+```
+
 
 ## How have the ratings changed over time?
 ```{r echo = FALSE}
 <<elo_history_plot>>
 ```
 
+## What next?
+- Season simulation should take points scored into consideration
+- Simulate playoffs and add a column to the table for P(win playoffs)
+- Add expected value of entry
